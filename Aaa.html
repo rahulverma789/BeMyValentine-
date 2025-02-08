@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(120deg, #ff758c, #ff7eb3);
+            color: white;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Hide elements initially */
+        .hidden {
+            display: none;
+        }
+
+        h1, h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        /* Button Styling */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
+            border-radius: 50px;
+            margin: 10px;
+        }
+
+        .btn.glow {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 0 10px #ff4d6d;
+        }
+
+        .yes-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .no-btn {
+            background-color: #dc3545;
+            color: white;
+            position: relative;
+        }
+
+        .retry-btn {
+            background-color: #ff4d6d;
+            color: white;
+        }
+
+        /* Moving No Button */
+        .no-btn:hover {
+            position: absolute;
+        }
+
+        /* Falling Hearts Animation */
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Landing Page -->
+        <div class="landing-page" id="landing">
+            <h1>Someone special deserves something special... and that's you!</h1>
+            <button onclick="goToMain()" class="btn glow">Click to Continue</button>
+        </div>
+
+        <!-- Main Page -->
+        <div class="main-page hidden" id="main">
+            <h2>Will You Be My Valentine?</h2>
+            <p class="message">Every moment with you feels like a beautiful dream. I’d love to make this Valentine’s Day special with you. ❤️</p>
+            
+            <div class="pickup-lines">
+                <p class="line">"Are you a magician? Because whenever I look at you, everyone else disappears."</p>
+                <p class="line">"Even if there was no gravity on Earth, I would still fall for you."</p>
+            </div>
+
+            <div class="button-group">
+                <button class="btn yes-btn" onclick="showYesPage()">Yes</button>
+                <button class="btn no-btn" id="noButton" onmouseover="moveNoButton()">No</button>
+            </div>
+        </div>
+
+        <!-- Yes Page -->
+        <div class="yes-page hidden" id="yes">
+            <h2>Yay! ❤️</h2>
+            <p class="final-message">You just made my heart the happiest place on Earth!</p>
+            <div class="animation">
+                🎆✨💖 
+            </div>
+        </div>
+
+        <!-- No Page -->
+        <div class="no-page hidden" id="no">
+            <h2>Oh no! 😢</h2>
+            <p class="final-message">That hurts... but I’ll try again! ❤️</p>
+            <button class="btn retry-btn" onclick="goToMain()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // GSAP Animations
+        gsap.from(".container", { duration: 1.5, opacity: 0, scale: 0.8, ease: "power2.out" });
+
+        // Function to switch from landing to main page
+        function goToMain() {
+            gsap.to("#landing", { opacity: 0, duration: 0.5, onComplete: function() {
+                document.getElementById("landing").classList.add("hidden");
+                document.getElementById("main").classList.remove("hidden");
+                gsap.from("#main", { opacity: 0, y: 50, duration: 1 });
+            }});
+        }
+
+        // Function to show the Yes page
+        function showYesPage() {
+            gsap.to("#main", { opacity: 0, duration: 0.5, onComplete: function() {
+                document.getElementById("main").classList.add("hidden");
+                document.getElementById("yes").classList.remove("hidden");
+                gsap.from("#yes", { opacity: 0, scale: 0.8, duration: 1 });
+                startHeartsAnimation();
+            }});
+        }
+
+        // Function to move the No button randomly
+        function moveNoButton() {
+            let noBtn = document.getElementById("noButton");
+            let randomX = Math.random() * (window.innerWidth - 200);
+            let randomY = Math.random() * (window.innerHeight - 100);
+            gsap.to(noBtn, { x: randomX, y: randomY, duration: 0.5 });
+        }
+
+        // Function to create falling hearts on the Yes page
+        function startHeartsAnimation() {
+            for (let i = 0; i < 10; i++) {
+                let heart = document.createElement("div");
+                heart.classList.add("heart");
+                heart.innerHTML = "❤️";
+                document.body.appendChild(heart);
+
+                gsap.set(heart, {
+                    x: Math.random() * window.innerWidth,
+                    y: -50,
+                    scale: Math.random() * 0.5 + 0.5
+                });
+
+                gsap.to(heart, {
+                    y: window.innerHeight + 50,
+                    duration: Math.random() * 3 + 2,
+                    opacity: 0,
+                    onComplete: () => heart.remove()
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>
